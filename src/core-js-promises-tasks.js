@@ -95,8 +95,18 @@ function getFirstPromiseResult(promises) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)] => Promise rejected with 2
  */
-function getAllOrNothing(/* promises */) {
-  throw new Error('Not implemented');
+function getAllOrNothing(promises) {
+  const arrValues = [];
+  return Promise.allSettled(promises).then((results) => {
+    for (let i = 0; i < results.length; i += 1) {
+      if (results[i].status === 'fulfilled') {
+        arrValues.push(results[i].value);
+      } else {
+        return Promise.reject(results[i].reason);
+      }
+    }
+    return arrValues;
+  });
 }
 
 /**
@@ -111,8 +121,18 @@ function getAllOrNothing(/* promises */) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with [1, null, 3]
  */
-function getAllResult(/* promises */) {
-  throw new Error('Not implemented');
+function getAllResult(promises) {
+  const arrValues = [];
+  return Promise.allSettled(promises).then((results) => {
+    for (let i = 0; i < results.length; i += 1) {
+      if (results[i].status === 'fulfilled') {
+        arrValues.push(results[i].value);
+      } else {
+        arrValues.push(null);
+      }
+    }
+    return arrValues;
+  });
 }
 
 /**
